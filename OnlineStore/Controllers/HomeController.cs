@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MyBlog.Models;
+using OnlineStore.Models;
 using System.Diagnostics;
 
-namespace MyBlog.Controllers
+namespace OnlineStore.Controllers
 {
-    // [Authorize]
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -25,7 +25,7 @@ namespace MyBlog.Controllers
             return View();
         }
 
-        // [AllowAnonymous]
+        [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

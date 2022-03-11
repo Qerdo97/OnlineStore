@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>aspnet-MyBlog-FEC2F49F-2914-4618-829A-DB0FC10BF673</UserSecretsId>
+    <UserSecretsId>aspnet-OnlineStore-CE181BFA-277C-4047-BDBC-1B886467750B</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

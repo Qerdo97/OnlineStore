@@ -1,1 +1,1 @@
-MyBlog
+OnlineStore in ASP .Net 6 with database based on MsSQL Server 2019
