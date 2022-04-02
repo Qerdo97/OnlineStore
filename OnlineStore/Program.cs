@@ -2,21 +2,28 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using OnlineStore.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddDbContext<OnlineStoreContext>(options => options.UseSqlServer(
+    builder.Configuration.GetConnectionString("DefaultConnection"),
+    options => options.CommandTimeout(3600))
+);
+
 // Add services to the container.
-builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+// builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+//     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
 builder.Services.AddControllersWithViews(options =>
 {
-    var policy = new AuthorizationPolicyBuilder()
-        .RequireAuthenticatedUser()
-        .Build();
-    options.Filters.Add(new AuthorizeFilter(policy));
+    // var policy = new AuthorizationPolicyBuilder()
+    //     .RequireAuthenticatedUser()
+    //     .Build();
+    // options.Filters.Add(new AuthorizeFilter(policy));
 });
 builder.Services.AddRazorPages()
     .AddMicrosoftIdentityUI();
@@ -36,8 +43,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthentication();
-app.UseAuthorization();
+// app.UseAuthentication();
+// app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
