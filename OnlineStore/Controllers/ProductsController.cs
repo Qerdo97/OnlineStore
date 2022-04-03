@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿#nullable disable
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -15,14 +19,14 @@ namespace OnlineStore.Controllers
             _context = context;
         }
 
-        // GET: ProductsController
+        // GET: Products
         public async Task<IActionResult> Index()
         {
-            var OnlineStoreContext = _context.Products.Include(a => a.Brand).Include(a => a.Category);
-            return View(await OnlineStoreContext.ToListAsync());
+            var onlineStoreContext = _context.Products.Include(p => p.Brand).Include(p => p.Category);
+            return View(await onlineStoreContext.ToListAsync());
         }
 
-        // GET: ProductsController/Details/5
+        // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -31,8 +35,8 @@ namespace OnlineStore.Controllers
             }
 
             var product = await _context.Products
-                .Include(a => a.Brand)
-                .Include(a => a.Category)
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -42,18 +46,20 @@ namespace OnlineStore.Controllers
             return View(product);
         }
 
-        // GET: ProductsController/Create
+        // GET: Products/Create
         public IActionResult Create()
         {
-            ViewData["BrandId"] = new SelectList(_context.Brands, "Id", "Id");
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id");
+            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandId");
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId");
             return View();
         }
 
-        // POST: ProductsController/Create
+        // POST: Products/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductID,ProductName,BrandID,CategoryID,ListPrice")] Product product)
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,BrandId,CategoryId,ListPrice")] Product product)
         {
             if (ModelState.IsValid)
             {
@@ -61,12 +67,12 @@ namespace OnlineStore.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandID"] = new SelectList(_context.Brands, "Id", "Id", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandId", product.BrandId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
             return View(product);
         }
 
-        // GET: ProductsController/Edit/5
+        // GET: Products/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -79,16 +85,17 @@ namespace OnlineStore.Controllers
             {
                 return NotFound();
             }
-            ViewData["BrandID"] = new SelectList(_context.Brands, "Id", "Id", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandId", product.BrandId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
             return View(product);
         }
 
-
-        // POST: ProductsController/Edit/5
+        // POST: Products/Edit/5
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductID,ProductName,BrandID,CategoryID,ListPrice")] Product product)
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,BrandId,CategoryId,ListPrice")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -104,7 +111,7 @@ namespace OnlineStore.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProductExist(product.ProductId))
+                    if (!ProductExists(product.ProductId))
                     {
                         return NotFound();
                     }
@@ -115,12 +122,12 @@ namespace OnlineStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandID"] = new SelectList(_context.Brands, "Id", "Id", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
+            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandId", product.BrandId);
+            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
             return View(product);
         }
 
-        // GET: ProductsController/Delete/5
+        // GET: Products/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -129,8 +136,8 @@ namespace OnlineStore.Controllers
             }
 
             var product = await _context.Products
-                .Include(a => a.Brand)
-                .Include(a => a.Category)
+                .Include(p => p.Brand)
+                .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.ProductId == id);
             if (product == null)
             {
@@ -140,8 +147,8 @@ namespace OnlineStore.Controllers
             return View(product);
         }
 
-        // POST: ProductsController/Delete/5
-        [HttpPost]
+        // POST: Products/Delete/5
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -151,7 +158,7 @@ namespace OnlineStore.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExist(int id)
+        private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.ProductId == id);
         }
