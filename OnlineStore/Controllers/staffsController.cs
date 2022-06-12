@@ -1,4 +1,7 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +28,7 @@ namespace OnlineStore.Controllers
         // GET: staffs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.staff == null)
             {
                 return NotFound();
             }
@@ -71,7 +74,7 @@ namespace OnlineStore.Controllers
         // GET: staffs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.staff == null)
             {
                 return NotFound();
             }
@@ -126,7 +129,7 @@ namespace OnlineStore.Controllers
         // GET: staffs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.staff == null)
             {
                 return NotFound();
             }
@@ -148,15 +151,23 @@ namespace OnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.staff == null)
+            {
+                return Problem("Entity set 'OnlineStoreContext.staff'  is null.");
+            }
             var staff = await _context.staff.FindAsync(id);
-            _context.staff.Remove(staff);
+            if (staff != null)
+            {
+                _context.staff.Remove(staff);
+            }
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool staffExists(int id)
         {
-            return _context.staff.Any(e => e.StaffId == id);
+          return (_context.staff?.Any(e => e.StaffId == id)).GetValueOrDefault();
         }
     }
 }

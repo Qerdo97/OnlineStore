@@ -1,4 +1,7 @@
-﻿namespace OnlineStore.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace OnlineStore.Models
 {
     public partial class Store
     {

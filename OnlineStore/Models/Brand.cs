@@ -1,4 +1,7 @@
-﻿namespace OnlineStore.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace OnlineStore.Models
 {
     public partial class Brand
     {
@@ -6,6 +9,7 @@
         {
             Products = new HashSet<Product>();
         }
+
         public int BrandId { get; set; }
         public string BrandName { get; set; } = null!;
 
