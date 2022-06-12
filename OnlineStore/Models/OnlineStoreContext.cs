@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace OnlineStore.Models
 {
@@ -31,7 +28,7 @@ namespace OnlineStore.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=db;Database=OnlineStore;user=sa;password=ZAQ!2wsx");
+                optionsBuilder.UseSqlServer("server=DB;user=sa;password=ZAQ!2wsx;database=OnlineStore");
             }
         }
 
@@ -41,7 +38,9 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Brands", "Product");
 
-                entity.Property(e => e.BrandId).HasColumnName("BrandID");
+                entity.Property(e => e.BrandId)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("BrandID");
 
                 entity.Property(e => e.BrandName).HasMaxLength(50);
             });
@@ -50,7 +49,9 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Categories", "Product");
 
-                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
+                entity.Property(e => e.CategoryId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("CategoryID");
 
                 entity.Property(e => e.CategoryName).HasMaxLength(50);
             });
@@ -59,7 +60,9 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Customers", "Person");
 
-                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+                entity.Property(e => e.CustomerId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("CustomerID");
 
                 entity.Property(e => e.City).HasMaxLength(50);
 
@@ -82,7 +85,9 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Orders", "Order");
 
-                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+                entity.Property(e => e.OrderId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("OrderID");
 
                 entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
@@ -142,7 +147,9 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Products", "Product");
 
-                entity.Property(e => e.ProductId).HasColumnName("ProductID");
+                entity.Property(e => e.ProductId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("ProductID");
 
                 entity.Property(e => e.BrandId).HasColumnName("BrandID");
 
@@ -192,7 +199,9 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Stores", "Store");
 
-                entity.Property(e => e.StoreId).HasColumnName("StoreID");
+                entity.Property(e => e.StoreId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("StoreID");
 
                 entity.Property(e => e.City).HasMaxLength(50);
 
@@ -213,7 +222,9 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Staff", "Person");
 
-                entity.Property(e => e.StaffId).HasColumnName("StaffID");
+                entity.Property(e => e.StaffId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("StaffID");
 
                 entity.Property(e => e.Email).HasMaxLength(50);
 

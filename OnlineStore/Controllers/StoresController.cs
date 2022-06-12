@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#nullable disable
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Models;
 
@@ -21,15 +17,13 @@ namespace OnlineStore.Controllers
         // GET: Stores
         public async Task<IActionResult> Index()
         {
-              return _context.Stores != null ? 
-                          View(await _context.Stores.ToListAsync()) :
-                          Problem("Entity set 'OnlineStoreContext.Stores'  is null.");
+            return View(await _context.Stores.ToListAsync());
         }
 
         // GET: Stores/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Stores == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -69,7 +63,7 @@ namespace OnlineStore.Controllers
         // GET: Stores/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Stores == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -120,7 +114,7 @@ namespace OnlineStore.Controllers
         // GET: Stores/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Stores == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -140,23 +134,15 @@ namespace OnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Stores == null)
-            {
-                return Problem("Entity set 'OnlineStoreContext.Stores'  is null.");
-            }
             var store = await _context.Stores.FindAsync(id);
-            if (store != null)
-            {
-                _context.Stores.Remove(store);
-            }
-            
+            _context.Stores.Remove(store);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool StoreExists(int id)
         {
-          return (_context.Stores?.Any(e => e.StoreId == id)).GetValueOrDefault();
+            return _context.Stores.Any(e => e.StoreId == id);
         }
     }
 }

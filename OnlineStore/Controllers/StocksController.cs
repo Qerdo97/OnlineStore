@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿#nullable disable
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +25,7 @@ namespace OnlineStore.Controllers
         // GET: Stocks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Stocks == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -74,7 +71,7 @@ namespace OnlineStore.Controllers
         // GET: Stocks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Stocks == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -129,7 +126,7 @@ namespace OnlineStore.Controllers
         // GET: Stocks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Stocks == null)
+            if (id == null)
             {
                 return NotFound();
             }
@@ -151,23 +148,15 @@ namespace OnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Stocks == null)
-            {
-                return Problem("Entity set 'OnlineStoreContext.Stocks'  is null.");
-            }
             var stock = await _context.Stocks.FindAsync(id);
-            if (stock != null)
-            {
-                _context.Stocks.Remove(stock);
-            }
-            
+            _context.Stocks.Remove(stock);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool StockExists(int id)
         {
-          return (_context.Stocks?.Any(e => e.StoreId == id)).GetValueOrDefault();
+            return _context.Stocks.Any(e => e.StoreId == id);
         }
     }
 }
