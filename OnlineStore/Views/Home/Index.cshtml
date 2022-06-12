@@ -1,8 +1,169 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<head>
+    <!-- Font Awesome icons (free version)-->
+    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
+    <!-- Simple line icons-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.5.5/css/simple-line-icons.min.css" rel="stylesheet" />
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="~/css/style.css" rel="stylesheet" />
+</head>
+<!-- Header-->
+<header class="masthead d-flex align-items-center">
+    <div class="container px-4 px-lg-5 text-center">
+        <h1 class="mb-1">Online Store</h1>
+        <h3 class="mb-5"><em>Welcome in our best Online Store</em></h3>
+        <a class="btn btn-primary btn-xl" asp-controller="Products">Find Out our Products</a>
+    </div>
+</header>
+<!-- About-->
+<section class="content-section bg-light" id="about">
+    <div class="container px-4 px-lg-5 text-center">
+        <div class="row gx-4 gx-lg-5 justify-content-center">
+            <div class="col-lg-10">
+                <h2>Online Store is the best place for your next shopping!</h2>
+                <p class="lead mb-5">
+                    Cheap, wide variety of products, delivery on-time... everything whats you need.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Services-->
+<section class="content-section bg-primary text-white text-center" id="services">
+    <div class="container px-4 px-lg-5">
+        <div class="content-section-heading">
+            <h3 class="text-secondary mb-0">Services</h3>
+            <h2 class="mb-5">What We Offer</h2>
+        </div>
+        <div class="row gx-4 gx-lg-5">
+            <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
+                <span class="service-icon rounded-circle mx-auto mb-3"><i class="icon-screen-smartphone"></i></span>
+                <h4><strong>Responsive website</strong></h4>
+                <p class="text-faded mb-0">Looks great on any screen size!</p>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5 mb-lg-0">
+                <span class="service-icon rounded-circle mx-auto mb-3"><i class="icon-fire"></i></span>
+                <h4><strong>Sales</strong></h4>
+                <p class="text-faded mb-0">Always hot discounts</p>
+            </div>
+            <div class="col-lg-3 col-md-6 mb-5 mb-md-0">
+                <span class="service-icon rounded-circle mx-auto mb-3"><i class="icon-like"></i></span>
+                <h4><strong>Favorited</strong></h4>
+                <p class="text-faded mb-0">
+                    Millions of users
+                    <i class="fas fa-heart"></i>
+                    Online Store
+                </p>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <span class="service-icon rounded-circle mx-auto mb-3"><i class="icon-support"></i></span>
+                <h4><strong>Support</strong></h4>
+                <p class="text-faded mb-0">Always ready to bring you support</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Callout-->
+<section class="callout">
+    <div class="container px-4 px-lg-5 text-center">
+        <h2 class="mx-auto mb-5">
+            Welcome to
+            <em>your</em>
+            next favourite shoping website!
+        </h2>
+        <a class="btn btn-primary btn-xl" asp-controller="Products">Find Out our Products</a>
+    </div>
+</section>
+<!-- Portfolio-->
+<section class="content-section" id="portfolio">
+    <div class="container px-4 px-lg-5">
+        <div class="content-section-heading text-center">
+            <h3 class="text-secondary mb-0">Portfolio</h3>
+            <h2 class="mb-5">Most Liked Categories</h2>
+        </div>
+        <div class="row gx-0">
+            <div class="col-lg-6">
+                <a class="portfolio-item" href="#!">
+                    <div class="caption">
+                        <div class="caption-content">
+                            <div class="h2">Electronics</div>
+                            <p class="mb-0">CPU, GPU, RAM... or maybe you need a new Motherboard. We know what will fit the best for you!</p>
+                        </div>
+                    </div>
+                    <img class="img-fluid" src="~/images/portfolio-1.jpg" alt="..." />
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <a class="portfolio-item" href="#!">
+                    <div class="caption">
+                        <div class="caption-content">
+                            <div class="h2">Ice Creams</div>
+                            <p class="mb-0">The best ice creams from around the world, here, at the Online Store!</p>
+                        </div>
+                    </div>
+                    <img class="img-fluid" src="~/images/portfolio-5.jpg" alt="..." />
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <a class="portfolio-item" href="#!">
+                    <div class="caption">
+                        <div class="caption-content">
+                            <div class="h2">Strawberries</div>
+                            <p class="mb-0">Strawberries are such a tasty snack, especially with a little sugar on top!</p>
+                        </div>
+                    </div>
+                    <img class="img-fluid" src="~/images/portfolio-3.jpg" alt="..." />
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <a class="portfolio-item" href="#!">
+                    <div class="caption">
+                        <div class="caption-content">
+                            <div class="h2">Video Games</div>
+                            <p class="mb-0">Want to try new Fifa game?</p>
+                        </div>
+                    </div>
+                    <img class="img-fluid" src="~/images/portfolio-6.jpg" alt="..." />
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Call to Action-->
+<section class="content-section bg-primary text-white">
+    <div class="container px-4 px-lg-5 text-center">
+        <h2 class="mb-4">The buttons below are impossible to resist...</h2>
+        <a class="btn btn-xl btn-light me-4" href="https://youtu.be/dQw4w9WgXcQ" target="_blank">Click Me!</a>
+        <a class="btn btn-xl btn-dark" href="https://youtu.be/p47fEXGabaY" target="_blank">And Me!</a>
+    </div>
+</section>
+<!-- Map-->
+<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4086.1621173832095!2d-110.8380303845304!3d32.149993422997085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x70bae41d2104ce95!2zMzLCsDA4JzYwLjAiTiAxMTDCsDUwJzA5LjAiVw!5e1!3m2!1spl!2spl!4v1655041051308!5m2!1spl!2spl" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+<!-- Footer-->
+<footer class="footer text-center">
+    <div class="container px-4 px-lg-5">
+        <ul class="list-inline mb-5">
+            <li class="list-inline-item">
+                <a class="social-link rounded-circle text-white mr-3" href="https://www.facebook.com/upoilempoziomki"><i class="icon-social-facebook"></i></a>
+            </li>
+            <li class="list-inline-item">
+                <a class="social-link rounded-circle text-white mr-3" href="https://www.linkedin.com/in/grzegorzsekula/"><i class="icon-social-linkedin"></i></a>
+            </li>
+            <li class="list-inline-item">
+                <a class="social-link rounded-circle text-white mr-3" href="https://twitter.com/UpoilemPoziomki"><i class="icon-social-twitter"></i></a>
+            </li>
+            <li class="list-inline-item">
+                <a class="social-link rounded-circle text-white" href="https://github.com/Qerdo97"><i class="icon-social-github"></i></a>
+            </li>
+        </ul>
+        @*<p class="text-muted small mb-0">Copyright &copy; OnlineStore 2022</p>*@
+    </div>
+</footer>
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+<!-- Core theme JS-->
+<script src="~/js/scripts.js"></script>

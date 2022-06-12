@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace OnlineStore.Models
 {
@@ -42,7 +39,7 @@ namespace OnlineStore.Models
                 entity.ToTable("Brands", "Product");
 
                 entity.Property(e => e.BrandId)
-                    .ValueGeneratedNever()
+                    .ValueGeneratedOnAdd()
                     .HasColumnName("BrandID");
 
                 entity.Property(e => e.BrandName).HasMaxLength(50);

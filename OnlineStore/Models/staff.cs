@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace OnlineStore.Models
+﻿namespace OnlineStore.Models
 {
     public partial class staff
     {
