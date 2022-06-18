@@ -1,4 +1,8 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +10,8 @@ using OnlineStore.Models;
 
 namespace OnlineStore.Controllers
 {
+    [Authorize]
+
     public class StocksController : Controller
     {
         private readonly OnlineStoreContext _context;
@@ -25,7 +31,7 @@ namespace OnlineStore.Controllers
         // GET: Stocks/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Stocks == null)
             {
                 return NotFound();
             }
@@ -53,25 +59,31 @@ namespace OnlineStore.Controllers
         // POST: Stocks/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [TempData]
+        public string Message { get; set; }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("StoreId,ProductId,Quantity")] Stock stock)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _context.Add(stock);
                 await _context.SaveChangesAsync();
+                Message = "Stock created successfully";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", stock.ProductId);
-            ViewData["StoreId"] = new SelectList(_context.Stores, "StoreId", "StoreId", stock.StoreId);
-            return View(stock);
+            catch
+            {
+                ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", stock.ProductId);
+                ViewData["StoreId"] = new SelectList(_context.Stores, "StoreId", "StoreId", stock.StoreId);
+                return View(stock);
+            }
         }
 
         // GET: Stocks/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Stocks == null)
             {
                 return NotFound();
             }
@@ -126,7 +138,7 @@ namespace OnlineStore.Controllers
         // GET: Stocks/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Stocks == null)
             {
                 return NotFound();
             }
@@ -148,15 +160,23 @@ namespace OnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.Stocks == null)
+            {
+                return Problem("Entity set 'OnlineStoreContext.Stocks'  is null.");
+            }
             var stock = await _context.Stocks.FindAsync(id);
-            _context.Stocks.Remove(stock);
+            if (stock != null)
+            {
+                _context.Stocks.Remove(stock);
+            }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool StockExists(int id)
         {
-            return _context.Stocks.Any(e => e.StoreId == id);
+            return (_context.Stocks?.Any(e => e.StoreId == id)).GetValueOrDefault();
         }
     }
 }

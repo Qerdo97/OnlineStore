@@ -1,10 +1,16 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Models;
 
 namespace OnlineStore.Controllers
 {
+    [Authorize]
     public class CustomersController : Controller
     {
         private readonly OnlineStoreContext _context;
@@ -17,13 +23,15 @@ namespace OnlineStore.Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Customers.ToListAsync());
+              return _context.Customers != null ? 
+                          View(await _context.Customers.ToListAsync()) :
+                          Problem("Entity set 'OnlineStoreContext.Customers'  is null.");
         }
 
         // GET: Customers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Customers == null)
             {
                 return NotFound();
             }
@@ -47,23 +55,29 @@ namespace OnlineStore.Controllers
         // POST: Customers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [TempData]
+        public string Message { get; set; }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,FirstName,LastName,Phone,Email,Street,City,State,ZipCode")] Customer customer)
+        public async Task<IActionResult> Create([Bind("CustomerId,FirstName,LastName,Phone,Email,Street,City,State,ZipCode,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] Customer customer)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _context.Add(customer);
                 await _context.SaveChangesAsync();
+                Message = $"Customer {customer.FirstName} {customer.LastName} added successfully.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            catch
+            {
+                return View(customer);
+            }
         }
 
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Customers == null)
             {
                 return NotFound();
             }
@@ -81,7 +95,7 @@ namespace OnlineStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,FirstName,LastName,Phone,Email,Street,City,State,ZipCode")] Customer customer)
+        public async Task<IActionResult> Edit(int id, [Bind("CustomerId,FirstName,LastName,Phone,Email,Street,City,State,ZipCode,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] Customer customer)
         {
             if (id != customer.CustomerId)
             {
@@ -114,7 +128,7 @@ namespace OnlineStore.Controllers
         // GET: Customers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Customers == null)
             {
                 return NotFound();
             }
@@ -134,15 +148,23 @@ namespace OnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.Customers == null)
+            {
+                return Problem("Entity set 'OnlineStoreContext.Customers'  is null.");
+            }
             var customer = await _context.Customers.FindAsync(id);
-            _context.Customers.Remove(customer);
+            if (customer != null)
+            {
+                _context.Customers.Remove(customer);
+            }
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CustomerExists(int id)
         {
-            return _context.Customers.Any(e => e.CustomerId == id);
+          return (_context.Customers?.Any(e => e.CustomerId == id)).GetValueOrDefault();
         }
     }
 }

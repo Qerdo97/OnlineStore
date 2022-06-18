@@ -1,4 +1,8 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +20,7 @@ namespace OnlineStore.Controllers
         }
 
         // GET: Products
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var onlineStoreContext = _context.Products.Include(p => p.Brand).Include(p => p.Category);
@@ -23,9 +28,10 @@ namespace OnlineStore.Controllers
         }
 
         // GET: Products/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
@@ -43,6 +49,7 @@ namespace OnlineStore.Controllers
         }
 
         // GET: Products/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandId");
@@ -53,25 +60,34 @@ namespace OnlineStore.Controllers
         // POST: Products/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [TempData]
+        public string Message { get; set; }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ProductId,ProductName,BrandId,CategoryId,ListPrice")] Product product)
+        [Authorize]
+        public async Task<IActionResult> Create([Bind("ProductId,ProductName,BrandId,CategoryId,ListPrice,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] Product product)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
+                Message = $"Product {product.ProductName} added successfully.";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandId", product.BrandId);
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
-            return View(product);
+            catch
+            {
+                ViewData["BrandId"] = new SelectList(_context.Brands, "BrandId", "BrandId", product.BrandId);
+                ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "CategoryId", product.CategoryId);
+                return View(product);
+            }
+
         }
 
         // GET: Products/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
@@ -91,7 +107,8 @@ namespace OnlineStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,BrandId,CategoryId,ListPrice")] Product product)
+        [Authorize]
+        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,BrandId,CategoryId,ListPrice,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -124,9 +141,10 @@ namespace OnlineStore.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Products == null)
             {
                 return NotFound();
             }
@@ -146,17 +164,26 @@ namespace OnlineStore.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.Products == null)
+            {
+                return Problem("Entity set 'OnlineStoreContext.Products'  is null.");
+            }
             var product = await _context.Products.FindAsync(id);
-            _context.Products.Remove(product);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+            }
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ProductExists(int id)
         {
-            return _context.Products.Any(e => e.ProductId == id);
+            return (_context.Products?.Any(e => e.ProductId == id)).GetValueOrDefault();
         }
     }
 }

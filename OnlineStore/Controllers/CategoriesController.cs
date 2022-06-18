@@ -1,10 +1,16 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Models;
 
 namespace OnlineStore.Controllers
 {
+    [Authorize]
     public class CategoriesController : Controller
     {
         private readonly OnlineStoreContext _context;
@@ -17,13 +23,15 @@ namespace OnlineStore.Controllers
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Categories.ToListAsync());
+              return _context.Categories != null ? 
+                          View(await _context.Categories.ToListAsync()) :
+                          Problem("Entity set 'OnlineStoreContext.Categories'  is null.");
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
@@ -47,23 +55,30 @@ namespace OnlineStore.Controllers
         // POST: Categories/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [TempData]
+        public string Message { get; set; }        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName")] Category category)
+        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] Category category)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
+                Message = $"Category {category.CategoryName} added successfully.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(category);
+            catch
+            {
+                return View(category);
+            }
+
         }
 
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
@@ -81,7 +96,7 @@ namespace OnlineStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName")] Category category)
+        public async Task<IActionResult> Edit(int id, [Bind("CategoryId,CategoryName,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] Category category)
         {
             if (id != category.CategoryId)
             {
@@ -114,7 +129,7 @@ namespace OnlineStore.Controllers
         // GET: Categories/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Categories == null)
             {
                 return NotFound();
             }
@@ -134,15 +149,23 @@ namespace OnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.Categories == null)
+            {
+                return Problem("Entity set 'OnlineStoreContext.Categories'  is null.");
+            }
             var category = await _context.Categories.FindAsync(id);
-            _context.Categories.Remove(category);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+            }
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool CategoryExists(int id)
         {
-            return _context.Categories.Any(e => e.CategoryId == id);
+          return (_context.Categories?.Any(e => e.CategoryId == id)).GetValueOrDefault();
         }
     }
 }

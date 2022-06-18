@@ -1,22 +1,16 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Http;
+
+@{
+    ViewBag.Title = "Home Page";
 }
-<head>
-    <!-- Font Awesome icons (free version)-->
-    <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-    <!-- Simple line icons-->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.5.5/css/simple-line-icons.min.css" rel="stylesheet" />
-    <!-- Google fonts-->
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
-    <!-- Core theme CSS (includes Bootstrap)-->
-    <link href="~/css/style.css" rel="stylesheet" />
-</head>
+
+
+
 <!-- Header-->
 <header class="masthead d-flex align-items-center">
     <div class="container px-4 px-lg-5 text-center">
         <h1 class="mb-1">Online Store</h1>
         <h3 class="mb-5"><em>Welcome in the best Online Store</em></h3>
-        <a class="btn btn-primary btn-xl" asp-controller="Products">Find Out our Products</a>
     </div>
 </header>
 <!-- About-->
@@ -24,9 +18,9 @@
     <div class="container px-4 px-lg-5 text-center">
         <div class="row gx-4 gx-lg-5 justify-content-center">
             <div class="col-lg-10">
-                <h2>Online Store is the best place for your next shopping!</h2>
+                <h2> Products:</h2>
                 <p class="lead mb-5">
-                    Cheap, wide variety of products, delivery on-time... everything whats you need.
+                    @await Component.InvokeAsync("DisplayProductsViewComponents", @Model)
                 </p>
             </div>
         </div>
@@ -70,11 +64,7 @@
 <!-- Callout-->
 <section class="callout">
     <div class="container px-4 px-lg-5 text-center">
-        <h2 class="mx-auto mb-5">
-            Welcome to
-            <em>your</em>
-            next favourite shoping website!
-        </h2>
+        <h2 class="mx-auto mb-5"> @await Component.InvokeAsync(nameof(OnlineStore.ViewComponents.HelloWorldViewComponent), "user") to <em>your</em> next favourite shoping website!</h2>
         <a class="btn btn-primary btn-xl" asp-controller="Products">Find Out our Products</a>
     </div>
 </section>
@@ -143,26 +133,6 @@
 </section>
 <!-- Map-->
 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4086.1621173832095!2d-110.8380303845304!3d32.149993422997085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x70bae41d2104ce95!2zMzLCsDA4JzYwLjAiTiAxMTDCsDUwJzA5LjAiVw!5e1!3m2!1spl!2spl!4v1655041051308!5m2!1spl!2spl" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-<!-- Footer-->
-<footer class="footer text-center">
-    <div class="container px-4 px-lg-5">
-        <ul class="list-inline mb-5">
-            <li class="list-inline-item">
-                <a class="social-link rounded-circle text-white mr-3" href="https://www.facebook.com/upoilempoziomki"><i class="icon-social-facebook"></i></a>
-            </li>
-            <li class="list-inline-item">
-                <a class="social-link rounded-circle text-white mr-3" href="https://www.linkedin.com/in/grzegorzsekula/"><i class="icon-social-linkedin"></i></a>
-            </li>
-            <li class="list-inline-item">
-                <a class="social-link rounded-circle text-white mr-3" href="https://twitter.com/UpoilemPoziomki"><i class="icon-social-twitter"></i></a>
-            </li>
-            <li class="list-inline-item">
-                <a class="social-link rounded-circle text-white" href="https://github.com/Qerdo97"><i class="icon-social-github"></i></a>
-            </li>
-        </ul>
-        @*<p class="text-muted small mb-0">Copyright &copy; OnlineStore 2022</p>*@
-    </div>
-</footer>
 <!-- Scroll to Top Button-->
 <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
 <!-- Core theme JS-->

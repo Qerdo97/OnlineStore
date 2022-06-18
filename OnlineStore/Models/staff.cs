@@ -1,4 +1,7 @@
-﻿namespace OnlineStore.Models
+﻿using System;
+using System.Collections.Generic;
+
+namespace OnlineStore.Models
 {
     public partial class staff
     {
@@ -15,9 +18,13 @@
         public string Phone { get; set; } = null!;
         public bool IsActive { get; set; }
         public int StoreId { get; set; }
-        public int ManagerId { get; set; }
+        public int? ManagerId { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string CreatedBy { get; set; } = null!;
+        public DateTime LastModifiedDate { get; set; }
+        public string LastModifiedBy { get; set; } = null!;
 
-        public virtual staff Manager { get; set; } = null!;
+        public virtual staff? Manager { get; set; }
         public virtual Store Store { get; set; } = null!;
         public virtual ICollection<staff> InverseManager { get; set; }
         public virtual ICollection<Order> Orders { get; set; }

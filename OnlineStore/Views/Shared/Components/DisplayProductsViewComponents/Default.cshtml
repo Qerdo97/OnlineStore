@@ -1,0 +1,17 @@
+﻿@model IEnumerable<OnlineStore.ViewModels.DisplayProductsViewModel>
+<div class="container d-flex justify-content-around">
+
+    @foreach (var product in Model)
+    {
+        <div style="display: flex; float: left; margin: 10px">
+            <div class="card" style="width: 18rem;">
+                @* <img class="card-img-top" src="..." alt="Card image cap"> *@
+                <div class="card-body">
+                    <h5 class="card-title">@product.ProductName</h5>
+                    <p class="card-text">@String.Format("{0:0.00}",product.ListPrice)</p>
+                    <a href="#" class="btn btn-primary">Buy now!</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

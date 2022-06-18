@@ -1,10 +1,16 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using OnlineStore.Models;
 
 namespace OnlineStore.Controllers
 {
+    [Authorize]
     public class BrandsController : Controller
     {
         private readonly OnlineStoreContext _context;
@@ -17,13 +23,15 @@ namespace OnlineStore.Controllers
         // GET: Brands
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Brands.ToListAsync());
+              return _context.Brands != null ? 
+                          View(await _context.Brands.ToListAsync()) :
+                          Problem("Entity set 'OnlineStoreContext.Brands'  is null.");
         }
 
         // GET: Brands/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Brands == null)
             {
                 return NotFound();
             }
@@ -47,23 +55,29 @@ namespace OnlineStore.Controllers
         // POST: Brands/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [TempData]
+        public string Message { get; set; }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("BrandId,BrandName")] Brand brand)
+        public async Task<IActionResult> Create([Bind("BrandId,BrandName,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] Brand brand)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _context.Add(brand);
                 await _context.SaveChangesAsync();
+                Message = $"Brand {brand.BrandName} added successfully.";
                 return RedirectToAction(nameof(Index));
             }
-            return View(brand);
+            catch
+            {
+                return View(brand);
+            }
         }
 
         // GET: Brands/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Brands == null)
             {
                 return NotFound();
             }
@@ -81,7 +95,7 @@ namespace OnlineStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("BrandId,BrandName")] Brand brand)
+        public async Task<IActionResult> Edit(int id, [Bind("BrandId,BrandName,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] Brand brand)
         {
             if (id != brand.BrandId)
             {
@@ -114,7 +128,7 @@ namespace OnlineStore.Controllers
         // GET: Brands/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.Brands == null)
             {
                 return NotFound();
             }
@@ -134,15 +148,23 @@ namespace OnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.Brands == null)
+            {
+                return Problem("Entity set 'OnlineStoreContext.Brands'  is null.");
+            }
             var brand = await _context.Brands.FindAsync(id);
-            _context.Brands.Remove(brand);
+            if (brand != null)
+            {
+                _context.Brands.Remove(brand);
+            }
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool BrandExists(int id)
         {
-            return _context.Brands.Any(e => e.BrandId == id);
+          return (_context.Brands?.Any(e => e.BrandId == id)).GetValueOrDefault();
         }
     }
 }

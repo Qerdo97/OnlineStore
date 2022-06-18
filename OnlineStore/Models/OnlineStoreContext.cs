@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace OnlineStore.Models
 {
@@ -28,7 +31,7 @@ namespace OnlineStore.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("server=DB;user=sa;password=ZAQ!2wsx;database=OnlineStore");
+                optionsBuilder.UseSqlServer("server=DB;user=sa;password=ZAQ!2wsx;database=OnlineStore;");
             }
         }
 
@@ -38,45 +41,81 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Brands", "Product");
 
-                entity.Property(e => e.BrandId)
-                    .ValueGeneratedOnAdd()
-                    .HasColumnName("BrandID");
+                entity.Property(e => e.BrandId).HasColumnName("BrandID");
 
-                entity.Property(e => e.BrandName).HasMaxLength(50);
+                entity.Property(e => e.BrandName).HasMaxLength(100);
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.LastModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasComputedColumnSql("(getdate())", false);
             });
 
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.ToTable("Categories", "Product");
 
-                entity.Property(e => e.CategoryId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("CategoryID");
+                entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
 
-                entity.Property(e => e.CategoryName).HasMaxLength(50);
+                entity.Property(e => e.CategoryName).HasMaxLength(100);
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.LastModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasComputedColumnSql("(getdate())", false);
             });
 
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.ToTable("Customers", "Person");
 
-                entity.Property(e => e.CustomerId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("CustomerID");
+                entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
-                entity.Property(e => e.City).HasMaxLength(50);
+                entity.Property(e => e.City).HasMaxLength(100);
 
-                entity.Property(e => e.Email).HasMaxLength(100);
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("(suser_sname())");
 
-                entity.Property(e => e.FirstName).HasMaxLength(50);
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.LastName).HasMaxLength(50);
+                entity.Property(e => e.Email).HasMaxLength(150);
+
+                entity.Property(e => e.FirstName).HasMaxLength(100);
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.LastModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasComputedColumnSql("(getdate())", false);
+
+                entity.Property(e => e.LastName).HasMaxLength(100);
 
                 entity.Property(e => e.Phone).HasMaxLength(15);
 
-                entity.Property(e => e.State).HasMaxLength(50);
+                entity.Property(e => e.State).HasMaxLength(100);
 
-                entity.Property(e => e.Street).HasMaxLength(50);
+                entity.Property(e => e.Street).HasMaxLength(100);
 
                 entity.Property(e => e.ZipCode).HasMaxLength(50);
             });
@@ -85,11 +124,23 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Orders", "Order");
 
-                entity.Property(e => e.OrderId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("OrderID");
+                entity.Property(e => e.OrderId).HasColumnName("OrderID");
+
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.LastModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasComputedColumnSql("(getdate())", false);
 
                 entity.Property(e => e.OrderStatus).HasMaxLength(50);
 
@@ -147,17 +198,29 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Products", "Product");
 
-                entity.Property(e => e.ProductId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("ProductID");
+                entity.Property(e => e.ProductId).HasColumnName("ProductID");
 
                 entity.Property(e => e.BrandId).HasColumnName("BrandID");
 
                 entity.Property(e => e.CategoryId).HasColumnName("CategoryID");
 
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.LastModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasComputedColumnSql("(getdate())", false);
+
                 entity.Property(e => e.ListPrice).HasColumnType("money");
 
-                entity.Property(e => e.ProductName).HasMaxLength(50);
+                entity.Property(e => e.ProductName).HasMaxLength(100);
 
                 entity.HasOne(d => d.Brand)
                     .WithMany(p => p.Products)
@@ -199,21 +262,33 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Stores", "Store");
 
-                entity.Property(e => e.StoreId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("StoreID");
+                entity.Property(e => e.StoreId).HasColumnName("StoreID");
 
-                entity.Property(e => e.City).HasMaxLength(50);
+                entity.Property(e => e.City).HasMaxLength(100);
 
-                entity.Property(e => e.Email).HasMaxLength(50);
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Email).HasMaxLength(150);
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.LastModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasComputedColumnSql("(getdate())", false);
 
                 entity.Property(e => e.Phone).HasMaxLength(15);
 
-                entity.Property(e => e.State).HasMaxLength(50);
+                entity.Property(e => e.State).HasMaxLength(100);
 
-                entity.Property(e => e.StoreName).HasMaxLength(50);
+                entity.Property(e => e.StoreName).HasMaxLength(100);
 
-                entity.Property(e => e.Street).HasMaxLength(50);
+                entity.Property(e => e.Street).HasMaxLength(100);
 
                 entity.Property(e => e.ZipCode).HasMaxLength(50);
             });
@@ -222,15 +297,27 @@ namespace OnlineStore.Models
             {
                 entity.ToTable("Staff", "Person");
 
-                entity.Property(e => e.StaffId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("StaffID");
+                entity.Property(e => e.StaffId).HasColumnName("StaffID");
 
-                entity.Property(e => e.Email).HasMaxLength(50);
+                entity.Property(e => e.CreatedBy)
+                    .HasMaxLength(150)
+                    .HasDefaultValueSql("(suser_sname())");
 
-                entity.Property(e => e.FirstName).HasMaxLength(50);
+                entity.Property(e => e.CreatedDate).HasDefaultValueSql("(getdate())");
 
-                entity.Property(e => e.LastName).HasMaxLength(50);
+                entity.Property(e => e.Email).HasMaxLength(150);
+
+                entity.Property(e => e.FirstName).HasMaxLength(100);
+
+                entity.Property(e => e.LastModifiedBy)
+                    .HasMaxLength(50)
+                    .HasDefaultValueSql("(suser_sname())");
+
+                entity.Property(e => e.LastModifiedDate)
+                    .HasColumnType("datetime")
+                    .HasComputedColumnSql("(getdate())", false);
+
+                entity.Property(e => e.LastName).HasMaxLength(100);
 
                 entity.Property(e => e.ManagerId).HasColumnName("ManagerID");
 
@@ -241,7 +328,6 @@ namespace OnlineStore.Models
                 entity.HasOne(d => d.Manager)
                     .WithMany(p => p.InverseManager)
                     .HasForeignKey(d => d.ManagerId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Staff_Staff");
 
                 entity.HasOne(d => d.Store)

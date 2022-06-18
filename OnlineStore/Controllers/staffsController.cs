@@ -1,4 +1,8 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +10,8 @@ using OnlineStore.Models;
 
 namespace OnlineStore.Controllers
 {
+    [Authorize]
+
     public class staffsController : Controller
     {
         private readonly OnlineStoreContext _context;
@@ -25,7 +31,7 @@ namespace OnlineStore.Controllers
         // GET: staffs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id == null || _context.staff == null)
             {
                 return NotFound();
             }
@@ -53,25 +59,32 @@ namespace OnlineStore.Controllers
         // POST: staffs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [TempData]
+        public string Message { get; set; }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StaffId,FirstName,LastName,Email,Phone,IsActive,StoreId,ManagerId")] staff staff)
+        public async Task<IActionResult> Create([Bind("StaffId,FirstName,LastName,Email,Phone,IsActive,StoreId,ManagerId,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] staff staff)
         {
-            if (ModelState.IsValid)
+            try
             {
                 _context.Add(staff);
                 await _context.SaveChangesAsync();
+                Message = "Staff created successfully";
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ManagerId"] = new SelectList(_context.staff, "StaffId", "StaffId", staff.ManagerId);
-            ViewData["StoreId"] = new SelectList(_context.Stores, "StoreId", "StoreId", staff.StoreId);
-            return View(staff);
+            catch
+            {
+                ViewData["ManagerId"] = new SelectList(_context.staff, "StaffId", "StaffId", staff.ManagerId);
+                ViewData["StoreId"] = new SelectList(_context.Stores, "StoreId", "StoreId", staff.StoreId);
+                return View(staff);
+            }
+
         }
 
         // GET: staffs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
+            if (id == null || _context.staff == null)
             {
                 return NotFound();
             }
@@ -91,7 +104,7 @@ namespace OnlineStore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StaffId,FirstName,LastName,Email,Phone,IsActive,StoreId,ManagerId")] staff staff)
+        public async Task<IActionResult> Edit(int id, [Bind("StaffId,FirstName,LastName,Email,Phone,IsActive,StoreId,ManagerId,CreatedDate,CreatedBy,LastModifiedDate,LastModifiedBy")] staff staff)
         {
             if (id != staff.StaffId)
             {
@@ -126,7 +139,7 @@ namespace OnlineStore.Controllers
         // GET: staffs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
+            if (id == null || _context.staff == null)
             {
                 return NotFound();
             }
@@ -148,15 +161,23 @@ namespace OnlineStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            if (_context.staff == null)
+            {
+                return Problem("Entity set 'OnlineStoreContext.staff'  is null.");
+            }
             var staff = await _context.staff.FindAsync(id);
-            _context.staff.Remove(staff);
+            if (staff != null)
+            {
+                _context.staff.Remove(staff);
+            }
+            
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool staffExists(int id)
         {
-            return _context.staff.Any(e => e.StaffId == id);
+          return (_context.staff?.Any(e => e.StaffId == id)).GetValueOrDefault();
         }
     }
 }
